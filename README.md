@@ -33,7 +33,6 @@ The default rules are:
 ufw.reset()
 ```
 
-
 #### Returns the status of the firewall
 Retuns a dict. Status is either `'active'` or `'inactive'`. If the firewall is active the default policies and rules list will also be included.
 ```python
@@ -78,10 +77,11 @@ ufw.add("allow 22", number=3)
 ```
 
 #### Delete rule
-Delete a rule. You can specify the rule itself or the rule number.
+Delete a rule. You can specify the rule itself, the rule number or the string `*` to delete all rules.
 ```python
 ufw.delete("allow 22")
 ufw.delete(3)
+ufw.delete('*')
 ```
 
 #### Get rules
@@ -115,6 +115,13 @@ ufw.show_listening()
     ('udp', '224.0.0.251', '5353', 'chrome', {}), 
     ('udp', '*', '68', 'dhclient', {})
 ]
+```
+
+#### Set Logging
+Set the ufw logging level. Choose from: `'on', 'off', 'low', 'medium', 'high', 'full'`.
+Check out `man ufw` for more info on logging.
+```python
+ufw.set_logging('on')
 ```
 
 #### Get raw iptables output
