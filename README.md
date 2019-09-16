@@ -25,7 +25,7 @@ ufw.disable()
 ```
 
 #### Reset the firewall
-Returns the firewall to it's install defaults. (incoming=deny, outgoing=allow, routed=reject)
+Returns the firewall to it's install defaults. `incoming=deny, outgoing=allow, routed=reject`  
 The default rules are:
   * `allow SSH`
   * `allow to 224.0.0.251 app mDNS`
@@ -35,7 +35,7 @@ ufw.reset()
 
 
 #### Returns the status of the firewall
-Retuns a dict. Status is either `'active'` or `'inactive'`. If the firewall is active the default policies  and rules list will be included.
+Retuns a dict. Status is either `'active'` or `'inactive'`. If the firewall is active the default policies and rules list will also be included.
 ```python
 ufw.status()
 ```
