@@ -57,9 +57,9 @@ def reset(force=True):
     backend._get_defaults()
     backend._read_rules()
 
-    # 'ufw reset' doesn't appear to reset the default policies???? weird
+    # ufw reset doesn't appear to reset the default policies???? weird
     # We'll set theses defaults then instead
-    default(incoming='deny', outgoing='allow', routed='reject')
+    default('deny', 'allow', 'reject')
 
     if prior_state:
         frontend.set_enabled(True)
@@ -89,10 +89,9 @@ def default(incoming=None, outgoing=None, routed=None, force=True):
             raise ufw.common.UFWError('Policy must be one of: allow, deny, reject')
 
         backend.set_default_policy(policy, direction)
-
-    if backend.is_enabled():
-        backend.stop_firewall()
-        backend.start_firewall()
+        if backend.is_enabled():
+            backend.stop_firewall()
+            backend.start_firewall()
 
 def add(rule, number=None, force=True):
     _init_gettext()

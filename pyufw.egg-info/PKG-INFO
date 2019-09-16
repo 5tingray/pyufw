@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: pyufw
+Version: 0.0.1
+Summary: A Python wrapper for UFW
+Home-page: https://github.com/5tingray/pyufw
+Author: Callum Ray
+Author-email: callumray@hotmail.co.uk
+License: UNKNOWN
+Description: # pyufw
+        A python wrapper for UFW
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Requires-Python: >=3
+Description-Content-Type: text/markdown

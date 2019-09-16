@@ -1,0 +1,8 @@
+README.md
+setup.py
+pyufw/__init__.py
+pyufw/pyufw.py
+pyufw.egg-info/PKG-INFO
+pyufw.egg-info/SOURCES.txt
+pyufw.egg-info/dependency_links.txt
+pyufw.egg-info/top_level.txt
