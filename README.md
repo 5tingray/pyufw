@@ -3,23 +3,31 @@ A python wrapper for UFW (Uncomplicated FireWall), a wrapper for iptables.
 
 ## Install
 pyufw is avaliable from PyPi. You can download it using pip:
-
 ```console
 $ pip3 install pyufw
 ```
+Also make sure ufw is installed. Depending on your distribution the package may be named `ufw` or `python-ufw`. 
 
 ## Documentation
+Your script will have to be run with root privilages. Upon importing the module the ufw security checks will start and you may see some warning messages. The following checks will commence:
+  * is setuid or setgid (for non-Linux systems)
+  * checks that script is owned by root
+  * checks that every component in absolute path are owned by root
+  * warn if script is group writable
+  * warn if part of script path is group writable
 
 ```python
 import pyufw as ufw
 ```
 
 #### Enable the firewall
+Enables the ufw firewall and enables on boot.
 ```python
 ufw.enable()
 ```
 
 #### Disable the firewall
+Disables the ufw firewall and disables on boot.
 ```python
 ufw.disable()
 ```
@@ -33,7 +41,7 @@ The default rules are:
 ufw.reset()
 ```
 
-#### Returns the status of the firewall
+#### Get status
 Retuns a dict. Status is either `'active'` or `'inactive'`. If the firewall is active the default policies and rules list will also be included.
 ```python
 ufw.status()
