@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="pyufw",
     packages=['pyufw'],
-    version="0.0.1",
+    version="0.0.3",
     author="Callum Ray",
     author_email="callumray@hotmail.co.uk",
     description="A Python wrapper for UFW",
