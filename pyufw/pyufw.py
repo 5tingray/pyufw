@@ -6,14 +6,24 @@ import ufw.common
 import ufw.parser
 import ufw.util
 
+
 def _init_gettext():
     progName = ufw.common.programName
-    gettext.install(progName) # fixes '_' not defined
+    # Due to the lack of _ method (of gettext module) in builtins namespace, some methods used in ufw fail
+    gettext.install(progName)  # fixes '_' not defined. Performs builtins.__dict__['_'] = self.gettext according to https://github.com/python/cpython/blob/3.9/Lib/gettext.py
+
+
+def _update_ufw_dependencies():  # When the state is changed externaly (i.e. another python program), a previous frontend instance does not detect the changes
+    _init_gettext()
+    frontend = ufw.frontend.UFWFrontend(dryrun=False)
+    return frontend, frontend.backend
+
 
 _init_gettext()
 
 frontend = ufw.frontend.UFWFrontend(dryrun=False)
 backend = frontend.backend
+
 
 def _run_rule(rule_str, force=True):
     
@@ -33,15 +43,18 @@ def _run_rule(rule_str, force=True):
 
     return frontend.do_action(pr.action, rule, ip_type, force)
 
+
 def enable():
     _init_gettext()
     frontend.set_enabled(True)
+
 
 def disable():
     _init_gettext()
     frontend.set_enabled(False)
 
-def reset(force=True):
+
+def reset():
     _init_gettext()
 
     prior_state = backend.is_enabled()
@@ -66,6 +79,7 @@ def reset(force=True):
 
     return resp
 
+
 def reload():
     _init_gettext()
     # Only reload if ufw is enabled
@@ -73,12 +87,14 @@ def reload():
         frontend.set_enabled(False)
         frontend.set_enabled(True)
 
+
 def set_logging(level):
     _init_gettext()
     if not level in('on', 'off', 'low', 'medium', 'high', 'full'):
         raise ufw.common.UFWError('Logging level must be one of: on, off, medium, high, full')
 
     frontend.set_loglevel(level)
+
 
 def default(incoming=None, outgoing=None, routed=None, force=True):
     _init_gettext()
@@ -93,6 +109,7 @@ def default(incoming=None, outgoing=None, routed=None, force=True):
     if backend.is_enabled():
         backend.stop_firewall()
         backend.start_firewall()
+
 
 def add(rule, number=None, force=True):
     _init_gettext()
@@ -114,6 +131,7 @@ def add(rule, number=None, force=True):
         else:
             _run_rule("rule insert {} {}".format(number, rule), force=force)
 
+
 def delete(rule, force=True):
     _init_gettext()
 
@@ -133,6 +151,7 @@ def delete(rule, force=True):
         else:
             _run_rule("rule delete {}".format(rule), force=force)
 
+
 def _get_enabled():
     _init_gettext()
 
@@ -145,8 +164,10 @@ def _get_enabled():
             raise ufw.common.UFWError("iptables: {}\n".format(out))
     return True
 
+
 def status():
     _init_gettext()
+    frontend, backend = _update_ufw_dependencies()  # Backend is not storing some changes that happen outside this program => create a new instance to get the last state
 
     if not _get_enabled():
         status = {'status': 'inactive'}
@@ -162,8 +183,10 @@ def status():
         }
     return status
 
+
 def get_rules():
     _init_gettext()
+    frontend, backend = _update_ufw_dependencies()  # Backend is not storing some changes that happen outside this program => create a new instance to get the last state
 
     rules = backend.get_rules()
     count = 1
@@ -187,26 +210,32 @@ def get_rules():
         return_rules[count] = rstr
         count += 1
     return return_rules
-        
+
+
 def show_raw():
     _init_gettext()
     return frontend.get_show_raw('raw')
+
 
 def show_builtins():
     _init_gettext()
     return frontend.get_show_raw('builtins')
 
+
 def show_before_rules():
     _init_gettext()
     return frontend.get_show_raw('before-rules')
+
 
 def show_user_rules():
     _init_gettext()
     return frontend.get_show_raw('user-rules')
 
+
 def show_logging_rules():
     _init_gettext()
     return frontend.get_show_raw('logging-rules')
+
 
 def show_listening():
     _init_gettext()
@@ -268,6 +297,7 @@ def show_listening():
 
                 listeners.append((transport, addr, int(port), application, matching_rules))
     return listeners
+
 
 def show_added():
     return get_rules()
