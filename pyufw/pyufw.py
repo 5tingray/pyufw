@@ -165,7 +165,7 @@ def _get_enabled():
     return True
 
 
-def status():
+def status(detailed=False):
     _init_gettext()
     frontend, backend = _update_ufw_dependencies()  # Backend is not storing some changes that happen outside this program => create a new instance to get the last state
 
@@ -179,12 +179,12 @@ def status():
                 'outgoing': backend._get_default_policy('output'),
                 'routed': backend._get_default_policy('forward')
             },
-            'rules': get_rules()
+            'rules': get_rules(detailed)
         }
     return status
 
 
-def get_rules():
+def get_rules(detailed=False):
     _init_gettext()
     frontend, backend = _update_ufw_dependencies()  # Backend is not storing some changes that happen outside this program => create a new instance to get the last state
 
@@ -207,7 +207,13 @@ def get_rules():
         else:
             rstr = ufw.parser.UFWCommandRule.get_command(r)
             
-        return_rules[count] = rstr
+        if detailed:
+            return_rules[count] = {
+                "rule": rstr,
+                "ver": "ipv6" if r.v6 else "ipv4" 
+            }
+        else:
+            return_rules[count] = rstr
         count += 1
     return return_rules
 
